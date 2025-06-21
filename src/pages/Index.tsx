@@ -17,15 +17,16 @@ const Index = () => {
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            background: #0a0a0a;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', system-ui, sans-serif;
+            background: #121212;
             color: #e5e5e5;
             min-height: 100vh;
             font-size: 14px;
+            line-height: 1.6;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 40px 20px;
             position: relative;
@@ -37,16 +38,17 @@ const Index = () => {
         }
 
         .title {
-            font-size: 28px;
-            font-weight: 600;
+            font-size: 32px;
+            font-weight: 700;
             color: #ffffff;
             margin-bottom: 8px;
             letter-spacing: -0.5px;
         }
 
         .subtitle {
-            color: #888;
-            font-size: 14px;
+            color: #999;
+            font-size: 16px;
+            font-weight: 400;
         }
 
         .input-section {
@@ -54,52 +56,62 @@ const Index = () => {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 16px;
+            gap: 20px;
         }
 
         .prompt-input {
             width: 100%;
-            max-width: 500px;
-            padding: 16px 20px;
-            background: #1a1a1a;
+            max-width: 600px;
+            padding: 18px 24px;
+            background: #1e1e1e;
             border: 1px solid #333;
             border-radius: 12px;
             color: #e5e5e5;
-            font-size: 15px;
+            font-size: 16px;
             outline: none;
             transition: all 0.3s ease;
+            font-family: inherit;
         }
 
         .prompt-input:focus {
-            border-color: #444;
-            background: #1e1e1e;
+            border-color: #555;
+            background: #252525;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
         }
 
         .prompt-input::placeholder {
-            color: #666;
+            color: #777;
         }
 
         .generate-btn {
-            padding: 12px 32px;
-            background: #2a2a2a;
+            padding: 16px 40px;
+            background: #1e1e1e;
             border: 1px solid #404040;
-            border-radius: 8px;
+            border-radius: 10px;
             color: #e5e5e5;
-            font-size: 14px;
-            font-weight: 500;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             outline: none;
+            font-family: inherit;
+            min-width: 140px;
         }
 
         .generate-btn:hover:not(:disabled) {
-            background: #353535;
+            background: #2a2a2a;
             border-color: #555;
+            transform: translateY(-1px);
+        }
+
+        .generate-btn:active:not(:disabled) {
+            transform: translateY(0);
         }
 
         .generate-btn:disabled {
-            opacity: 0.5;
+            opacity: 0.6;
             cursor: not-allowed;
+            transform: none;
         }
 
         .models-panel {
@@ -110,11 +122,11 @@ const Index = () => {
         }
 
         .models-toggle {
-            width: 40px;
-            height: 40px;
-            background: #1a1a1a;
+            width: 44px;
+            height: 44px;
+            background: #1e1e1e;
             border: 1px solid #333;
-            border-radius: 8px;
+            border-radius: 10px;
             color: #e5e5e5;
             cursor: pointer;
             display: flex;
@@ -131,17 +143,18 @@ const Index = () => {
 
         .models-content {
             position: absolute;
-            top: 50px;
+            top: 54px;
             right: 0;
-            width: 320px;
-            background: #1a1a1a;
+            width: 340px;
+            background: #1e1e1e;
             border: 1px solid #333;
             border-radius: 12px;
-            padding: 20px;
+            padding: 24px;
             transform: translateY(-10px);
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         }
 
         .models-content.open {
@@ -151,46 +164,47 @@ const Index = () => {
         }
 
         .models-header {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 18px;
             color: #ffffff;
         }
 
         .models-list {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .model-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 8px 12px;
-            background: #0f0f0f;
+            padding: 12px 16px;
+            background: #121212;
             border: 1px solid #2a2a2a;
-            border-radius: 6px;
-            margin-bottom: 8px;
-            font-size: 13px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
         }
 
         .model-name {
             color: #e5e5e5;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .remove-btn {
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             background: none;
             border: none;
-            color: #666;
+            color: #777;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.2s ease;
             outline: none;
+            font-size: 16px;
         }
 
         .remove-btn:hover {
@@ -200,29 +214,30 @@ const Index = () => {
 
         .add-model-section {
             border-top: 1px solid #2a2a2a;
-            padding-top: 16px;
+            padding-top: 20px;
         }
 
         .add-model-toggle {
             width: 100%;
-            padding: 8px;
-            background: #0f0f0f;
+            padding: 12px;
+            background: #121212;
             border: 1px solid #2a2a2a;
-            border-radius: 6px;
-            color: #888;
-            font-size: 13px;
+            border-radius: 8px;
+            color: #999;
+            font-size: 14px;
             cursor: pointer;
             transition: all 0.2s ease;
             outline: none;
+            font-family: inherit;
         }
 
         .add-model-toggle:hover {
-            background: #1a1a1a;
+            background: #1e1e1e;
             border-color: #333;
         }
 
         .add-model-form {
-            margin-top: 12px;
+            margin-top: 16px;
             display: none;
         }
 
@@ -232,15 +247,16 @@ const Index = () => {
 
         .form-input {
             width: 100%;
-            padding: 8px 12px;
-            background: #0f0f0f;
+            padding: 12px 16px;
+            background: #121212;
             border: 1px solid #2a2a2a;
-            border-radius: 6px;
+            border-radius: 8px;
             color: #e5e5e5;
-            font-size: 13px;
-            margin-bottom: 8px;
+            font-size: 14px;
+            margin-bottom: 12px;
             outline: none;
             transition: all 0.2s ease;
+            font-family: inherit;
         }
 
         .form-input:focus {
@@ -248,28 +264,30 @@ const Index = () => {
         }
 
         .form-input::placeholder {
-            color: #555;
+            color: #666;
         }
 
         .form-actions {
             display: flex;
-            gap: 8px;
+            gap: 10px;
         }
 
         .form-btn {
             flex: 1;
-            padding: 8px;
+            padding: 10px;
             border: 1px solid #2a2a2a;
-            border-radius: 6px;
-            font-size: 12px;
+            border-radius: 8px;
+            font-size: 13px;
             cursor: pointer;
             transition: all 0.2s ease;
             outline: none;
+            font-family: inherit;
         }
 
         .save-btn {
             background: #2a4a2a;
             color: #e5e5e5;
+            font-weight: 600;
         }
 
         .save-btn:hover {
@@ -277,19 +295,20 @@ const Index = () => {
         }
 
         .cancel-btn {
-            background: #0f0f0f;
-            color: #888;
+            background: #121212;
+            color: #999;
         }
 
         .cancel-btn:hover {
-            background: #1a1a1a;
+            background: #1e1e1e;
         }
 
         .images-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 40px;
+            gap: 50px;
+            min-height: 200px;
         }
 
         .image-item {
@@ -303,29 +322,50 @@ const Index = () => {
         .generated-image {
             width: 100%;
             height: auto;
-            border-radius: 12px;
+            border-radius: 16px;
             border: 1px solid #2a2a2a;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+        }
+
+        .generated-image:hover {
+            transform: translateY(-2px);
         }
 
         .image-label {
-            margin-top: 12px;
-            font-size: 13px;
-            color: #888;
-            font-weight: 500;
+            margin-top: 16px;
+            font-size: 14px;
+            color: #bbb;
+            font-weight: 600;
             text-align: center;
         }
 
         .loading {
             text-align: center;
-            padding: 60px 20px;
-            color: #666;
-            font-style: italic;
+            padding: 80px 20px;
+            color: #999;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            border: 3px solid #333;
+            border-radius: 50%;
+            border-top-color: #666;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         .arrow-icon {
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             transition: transform 0.3s ease;
         }
 
@@ -339,15 +379,15 @@ const Index = () => {
             }
 
             .title {
-                font-size: 24px;
+                font-size: 28px;
             }
 
             .models-content {
-                width: 280px;
+                width: 300px;
             }
 
             .input-section {
-                gap: 12px;
+                gap: 16px;
             }
 
             .prompt-input {
@@ -364,6 +404,11 @@ const Index = () => {
             .models-content {
                 width: calc(100vw - 40px);
                 right: -10px;
+            }
+
+            .generate-btn {
+                padding: 14px 32px;
+                font-size: 15px;
             }
         }
     </style>
@@ -466,14 +511,19 @@ const Index = () => {
 
         function generateImages() {
             const prompt = promptInput.value.trim();
+            
+            // If prompt is empty, do nothing
             if (!prompt || isGenerating) return;
 
             isGenerating = true;
             generateBtn.disabled = true;
             generateBtn.textContent = 'Generating...';
 
-            // Show loading state
-            imagesContainer.innerHTML = '<div class="loading">Generating images...</div>';
+            // Clear previous images
+            imagesContainer.innerHTML = '';
+
+            // Show loading indicator
+            showLoadingIndicator();
 
             // Generate images for all models
             const imagePromises = models.map(model => {
@@ -490,6 +540,7 @@ const Index = () => {
 
             // Wait for all images and display them
             Promise.all(imagePromises).then(images => {
+                hideLoadingIndicator();
                 displayImages(images);
                 isGenerating = false;
                 generateBtn.disabled = false;
@@ -497,8 +548,25 @@ const Index = () => {
             });
         }
 
+        function showLoadingIndicator() {
+            const loadingDiv = document.createElement('div');
+            loadingDiv.id = 'loadingIndicator';
+            loadingDiv.className = 'loading';
+            loadingDiv.innerHTML = \`
+                <div class="loading-spinner"></div>
+                <div>Generating images...</div>
+            \`;
+            imagesContainer.appendChild(loadingDiv);
+        }
+
+        function hideLoadingIndicator() {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            if (loadingIndicator) {
+                loadingIndicator.remove();
+            }
+        }
+
         function displayImages(images) {
-            imagesContainer.innerHTML = '';
             images.forEach(image => {
                 const imageItem = document.createElement('div');
                 imageItem.className = 'image-item';
