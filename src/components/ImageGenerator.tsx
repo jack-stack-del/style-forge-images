@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import PromptInput from './PromptInput';
-import ModelsManager from './ModelsManager';
+import FloatingModelsPanel from './FloatingModelsPanel';
 import GeneratedImages from './GeneratedImages';
 import { Model, GeneratedImage } from '@/types/imageGenerator';
 import { generateImageUrl, getInitialModels } from '@/utils/imageGeneration';
@@ -35,11 +35,16 @@ const ImageGenerator: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-5 px-5">
-      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">
-          AI Image Generator
-        </h1>
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="max-w-4xl mx-auto py-10 px-5 relative">
+        <div className="text-center mb-[50px]">
+          <h1 className="text-[32px] font-bold text-foreground mb-2 tracking-tight">
+            AI Image Generator
+          </h1>
+          <p className="text-muted-foreground text-base">
+            Create stunning images with artificial intelligence
+          </p>
+        </div>
         
         <PromptInput
           prompt={prompt}
@@ -48,14 +53,14 @@ const ImageGenerator: React.FC = () => {
           isGenerating={isGenerating}
         />
 
-        <ModelsManager
-          models={models}
-          onModelsChange={setModels}
-        />
-
         <GeneratedImages
           images={images}
           isGenerating={isGenerating}
+        />
+
+        <FloatingModelsPanel
+          models={models}
+          onModelsChange={setModels}
         />
       </div>
     </div>

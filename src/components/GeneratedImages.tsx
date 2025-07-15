@@ -10,8 +10,9 @@ interface GeneratedImagesProps {
 const GeneratedImages: React.FC<GeneratedImagesProps> = ({ images, isGenerating }) => {
   if (isGenerating) {
     return (
-      <div className="text-center py-8">
-        <div className="text-gray-600 italic">Generating images...</div>
+      <div className="text-center py-20 text-muted-foreground text-lg font-medium">
+        <div className="inline-block w-8 h-8 border-[3px] border-border border-t-muted-foreground rounded-full animate-spin mb-4"></div>
+        <div>Generating images...</div>
       </div>
     );
   }
@@ -21,16 +22,17 @@ const GeneratedImages: React.FC<GeneratedImagesProps> = ({ images, isGenerating 
   }
 
   return (
-    <div className="images-container space-y-6">
+    <div className="flex flex-col items-center gap-[50px] min-h-[200px]">
       {images.map((image, index) => (
-        <div key={index} className="flex flex-col items-center p-5 border border-gray-200 rounded-lg bg-gray-50">
+        <div key={index} className="flex flex-col items-center max-w-[512px] w-full">
           <img
             src={image.url}
             alt={`Generated image for ${image.modelName}`}
-            className="w-full max-w-lg h-auto rounded-lg shadow-md"
+            className="w-full h-auto rounded-2xl border border-border shadow-lg hover:-translate-y-[2px] transition-transform duration-300"
             loading="lazy"
+            style={{ boxShadow: '0 2px 8px rgba(0, 0, 0, 0.5)' }}
           />
-          <div className="mt-3 font-semibold text-gray-800 text-center">
+          <div className="mt-4 text-sm text-muted-foreground font-semibold text-center">
             {image.modelName}
           </div>
         </div>

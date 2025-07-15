@@ -52,15 +52,15 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
+				panel: {
+					DEFAULT: 'hsl(var(--panel-background))',
+					border: 'hsl(var(--panel-border))',
+					hover: 'hsl(var(--panel-hover))'
+				},
+				button: {
+					primary: 'hsl(var(--button-primary))',
+					'primary-hover': 'hsl(var(--button-primary-hover))',
+					border: 'hsl(var(--button-border))'
 				}
 			},
 			borderRadius: {
