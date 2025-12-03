@@ -6,6 +6,7 @@ import GeneratedImages from './GeneratedImages';
 import AttributeSelector from './AttributeSelector';
 import MultiAttributeSelector from './MultiAttributeSelector';
 import { promptCategories, PromptCategoryStructured } from '@/utils/promptGeneratorData';
+import { styles } from '@/utils/promptData/styles';
 import ModeToggle from './ModeToggle';
 import { GeneratedImage } from '@/types/imageGenerator';
 import { Button } from "@/components/ui/button";
@@ -111,6 +112,53 @@ const ImageGenerator: React.FC = () => {
           setSelectedAttributes={setSelectedAttributes}
         />
 
+        {/* Dynamic Style Selector - PRIORITY FEATURE */}
+        {mode === 'generate' && (
+          <div className="mb-6 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border-2 border-blue-200 shadow-sm">
+            <div className="flex items-center mb-4">
+              <span className="text-2xl mr-3">🎨</span>
+              <div>
+                <h3 className="text-lg font-bold text-gray-800">Choose Your Style</h3>
+                <p className="text-sm text-gray-600">This defines the visual aesthetic - select first for best results!</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+              {styles.map((style) => {
+                const isSelected = selectedAttributes.Style && typeof selectedAttributes.Style === 'object' && 'name' in selectedAttributes.Style && selectedAttributes.Style.name === style.name;
+                return (
+                  <button
+                    key={style.name}
+                    onClick={() => setSelectedAttributes((prev) => ({ ...prev, Style: style }))}
+                    className={`p-3 rounded-lg border-2 transition-all duration-200 text-left ${
+                      isSelected
+                        ? 'border-blue-500 bg-blue-100 shadow-md transform scale-105'
+                        : 'border-gray-200 bg-white hover:border-blue-300 hover:shadow-sm'
+                    }`}
+                  >
+                    <div className="font-semibold text-sm text-gray-800">{style.name}</div>
+                    {style.preferredModel && (
+                      <div className="text-xs text-gray-500 mt-1">Best with: {style.preferredModel}</div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+            {selectedAttributes.Style && typeof selectedAttributes.Style === 'object' && 'name' in selectedAttributes.Style && (
+              <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="flex items-center">
+                  <span className="text-green-600 mr-2">✓</span>
+                  <span className="text-sm font-medium text-blue-800">
+                    Selected: {selectedAttributes.Style.name}
+                  </span>
+                </div>
+                <div className="text-xs text-blue-600 mt-1">
+                  Keywords: {selectedAttributes.Style.keywords.join(', ')}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* --- Image Uploader --- */}
         {/* Only show the uploader in 'edit' mode */}
         {mode === 'edit' && (
@@ -172,7 +220,9 @@ const ImageGenerator: React.FC = () => {
 
         {/* --- Attribute Selectors --- */}
         {/* Only show the detailed attribute selectors in 'generate' mode for a cleaner UI */}
-        {mode === 'generate' && promptCategories.map((category: PromptCategoryStructured) => {
+        {mode === 'generate' && promptCategories.map((category: PromptCategoryStructured, index: number) => {
+          // Special styling for the first category (Style) to emphasize its importance
+          const isStyleCategory = index === 0 && category.label === 'Style';
           const currentSelections = (selectedAttributes[category.label] || []) as (string | object)[]; // Allow object types
 
           // Map options to their 'name' property for display in selectors
@@ -180,43 +230,57 @@ const ImageGenerator: React.FC = () => {
           
           if (category.multiSelect) {
             return (
-              <MultiAttributeSelector
-                key={category.label}
-                label={category.label}
-                options={optionsForDisplay}
-                selectedOptions={currentSelections.map(s => ((typeof s === 'object' && 'name' in s) ? s.name : String(s)) as string)}
-                onSelect={(optionName) =>
-                  setSelectedAttributes((prev) => {
-                    const selectedCategoryOption = category.options.find(opt => (typeof opt === 'object' && 'name' in opt) ? opt.name === optionName : String(opt) === optionName);
-                    if (!selectedCategoryOption) return prev;
+              <div key={category.label} className={isStyleCategory ? "mb-6 p-4 bg-blue-50 rounded-lg border-2 border-blue-200" : "mb-4"}>
+                {isStyleCategory && (
+                  <div className="mb-2 text-sm font-semibold text-blue-700 flex items-center">
+                    <span className="mr-2">🎨</span>
+                    Choose your style first - this defines the visual aesthetic!
+                  </div>
+                )}
+                <MultiAttributeSelector
+                  label={category.label}
+                  options={optionsForDisplay}
+                  selectedOptions={currentSelections.map(s => ((typeof s === 'object' && 'name' in s) ? s.name : String(s)) as string)}
+                  onSelect={(optionName) =>
+                    setSelectedAttributes((prev) => {
+                      const selectedCategoryOption = category.options.find(opt => (typeof opt === 'object' && 'name' in opt) ? opt.name === optionName : String(opt) === optionName);
+                      if (!selectedCategoryOption) return prev;
 
-                    const prevSelections = (prev[category.label] || []) as (string | object)[];
-                    // Check if an object with the same 'name' is already selected
-                    const isSelected = prevSelections.some(item => (typeof item === 'object' && 'name' in item) ? item.name === optionName : String(item) === optionName);
+                      const prevSelections = (prev[category.label] || []) as (string | object)[];
+                      // Check if an object with the same 'name' is already selected
+                      const isSelected = prevSelections.some(item => (typeof item === 'object' && 'name' in item) ? item.name === optionName : String(item) === optionName);
 
-                    if (isSelected) {
-                      return { ...prev, [category.label]: prevSelections.filter(item => (typeof item === 'object' && 'name' in item) ? item.name !== optionName : String(item) !== optionName) };
-                    } else {
-                      return { ...prev, [category.label]: [...prevSelections, selectedCategoryOption] };
-                    }
-                  })
-                }
-              />
+                      if (isSelected) {
+                        return { ...prev, [category.label]: prevSelections.filter(item => (typeof item === 'object' && 'name' in item) ? item.name !== optionName : String(item) !== optionName) };
+                      } else {
+                        return { ...prev, [category.label]: [...prevSelections, selectedCategoryOption] };
+                      }
+                    })
+                  }
+                />
+              </div>
             );
           } else {
             return (
-              <AttributeSelector
-                key={category.label}
-                label={category.label}
-                options={optionsForDisplay}
-                selectedOption={(selectedAttributes[category.label] && typeof selectedAttributes[category.label] === 'object' && 'name' in selectedAttributes[category.label]) ? selectedAttributes[category.label].name : selectedAttributes[category.label] as string}
-                onSelect={(optionName) => {
-                  const selectedCategoryOption = category.options.find(opt => (typeof opt === 'object' && 'name' in opt) ? opt.name === optionName : String(opt) === optionName);
-                  if (selectedCategoryOption) {
-                    setSelectedAttributes((prev) => ({ ...prev, [category.label]: selectedCategoryOption }));
-                  }
-                }}
-              />
+              <div key={category.label} className={isStyleCategory ? "mb-6 p-4 bg-blue-50 rounded-lg border-2 border-blue-200" : "mb-4"}>
+                {isStyleCategory && (
+                  <div className="mb-2 text-sm font-semibold text-blue-700 flex items-center">
+                    <span className="mr-2">🎨</span>
+                    Choose your style first - this defines the visual aesthetic!
+                  </div>
+                )}
+                <AttributeSelector
+                  label={category.label}
+                  options={optionsForDisplay}
+                  selectedOption={(selectedAttributes[category.label] && typeof selectedAttributes[category.label] === 'object' && 'name' in selectedAttributes[category.label]) ? selectedAttributes[category.label].name : selectedAttributes[category.label] as string}
+                  onSelect={(optionName) => {
+                    const selectedCategoryOption = category.options.find(opt => (typeof opt === 'object' && 'name' in opt) ? opt.name === optionName : String(opt) === optionName);
+                    if (selectedCategoryOption) {
+                      setSelectedAttributes((prev) => ({ ...prev, [category.label]: selectedCategoryOption }));
+                    }
+                  }}
+                />
+              </div>
             );
           }
         })}

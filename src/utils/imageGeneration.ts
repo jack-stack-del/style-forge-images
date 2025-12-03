@@ -35,13 +35,13 @@ export const generateImageUrl = (
     }
   }
 
-  console.log(`[GENERATE] Model: ${selectedModel.name} | Prompt: "${fullPrompt}" | Negative: "${negativePrompt || 'N/A'}" | URL: ${url}`);
+  console.log(`[generateImageUrl] Model: ${selectedModel.name} | Full Prompt: "${fullPrompt}" | Negative: "${negativePrompt || 'N/A'}" | Final URL: ${url}`);
   if (negativePrompt) {
-    console.log(`[ImageGeneration Debug] Negative Prompt: ${negativePrompt}`);
+    console.log(`[generateImageUrl Debug] Negative Prompt: ${negativePrompt}`);
   }
   if (uploadedImage) {
-    console.log(`[ImageGeneration Debug] Uploaded Image (Base64/URL start): ${uploadedImage.substring(0, 50)}...`);
-    console.log(`[ImageGeneration Debug] Img2Img Strength: ${img2imgStrength}`);
+    console.log(`[generateImageUrl Debug] Uploaded Image (Base64/URL start): ${uploadedImage.substring(0, 50)}...`);
+    console.log(`[generateImageUrl Debug] Img2Img Strength: ${img2imgStrength}`);
   }
   return url;
 };
@@ -66,13 +66,13 @@ export const cleanPrompt = (prompt: string): string => {
 interface GenerateMultipleImagesParams {
   basePrompt: string;
   selectedModel: Model;
-  selectedAttributes: Record<string, string | string[]>;
+  selectedAttributes: Record<string, string | string[]>; // Reverted to original type
   negativePrompt?: string;
   uploadedImage?: string | null;
   img2imgStrength?: number;
-  width: number;
-  height: number;
-  guidanceScale: number;
+  width?: number; // Kept optional
+  height?: number; // Kept optional
+  guidanceScale?: number; // Kept optional
 }
 
 export const generateMultipleImages = (
@@ -84,6 +84,7 @@ export const generateMultipleImages = (
     // For simplicity, we'll append the style to the base prompt for now.
     // In a more advanced scenario, you might adjust the model or other parameters per style.
     const styledPrompt = `${params.basePrompt} in ${style} style`;
+    console.log(`[generateMultipleImages] Generating for style: "${style}" with prompt: "${styledPrompt}"`);
     const imageUrl = generateImageUrl(
       styledPrompt,
       params.selectedModel, // Note: The actual model might change per style in a real scenario

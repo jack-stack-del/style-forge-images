@@ -20,6 +20,10 @@ export interface PromptCategoryStructured {
 
 export const promptCategories: PromptCategoryStructured[] = [
   {
+    label: 'Style', // MOVED TO TOP - PRIORITY FOR STYLE-FIRST PROMPTS
+    options: styles,
+  },
+  {
     label: 'Character Type',
     options: [
       { name: '1girl', keywords: ['1girl'] },
@@ -59,10 +63,6 @@ export const promptCategories: PromptCategoryStructured[] = [
     options: settings,
   },
   {
-    label: 'Style',
-    options: styles,
-  },
-  {
     label: 'Lighting',
     options: lightings,
   },
@@ -80,7 +80,15 @@ export const promptCategories: PromptCategoryStructured[] = [
 export const generateSmartPrompt = (selectedAttributes: Record<string, unknown>): string => {
   const parts: string[] = [];
 
-  // 1. Character Type and Subject
+  // NEW ORDER: Style → Subject → Action → Additional Details
+
+  // 1. Style Specification (moved to front - PRIORITY CHANGE)
+  const style = selectedAttributes.Style;
+  if (style && typeof style === 'object' && 'keywords' in style && Array.isArray((style as { keywords: string[] }).keywords)) {
+    parts.push((style as { keywords: string[] }).keywords.join(' '));
+  }
+
+  // 2. Subject Specification (Character Type and Subject - streamlined)
   let subjectDescription = "";
   const characterType = selectedAttributes['Character Type'];
   const subject = selectedAttributes.Subject;
@@ -94,26 +102,11 @@ export const generateSmartPrompt = (selectedAttributes: Record<string, unknown>)
   if (subjectDescription) {
     // Replace any "female" with "girl" to maintain consistency
     subjectDescription = subjectDescription.replace(/female/gi, 'girl');
-
-    // Check if we already have a beauty descriptor
-    const hasBeautyDescriptor = subjectDescription.includes('beautiful') ||
-                                subjectDescription.includes('stunning') ||
-                                subjectDescription.includes('gorgeous');
-
-    if (!hasBeautyDescriptor) {
-      parts.push(`A stunningly beautiful ${subjectDescription}`);
-    } else {
-      parts.push(subjectDescription);
-    }
+    // Remove "A stunningly beautiful" prefix for cleaner, style-first prompts
+    parts.push(subjectDescription);
   }
 
-  // 2. Body Type
-  const bodyType = selectedAttributes['Body Type'];
-  if (bodyType && typeof bodyType === 'object' && 'keywords' in bodyType && Array.isArray((bodyType as { keywords: string[] }).keywords)) {
-    parts.push(`with a ${(bodyType as { keywords: string[] }).keywords.join(', ')} body`);
-  }
-
-  // 3. Pose/Action/Positions
+  // 3. Action or Look (Action/Pose/Positions - streamlined)
   const actionAndPosition: string[] = [];
   const action = selectedAttributes.Action;
   const positions = selectedAttributes.Positions;
@@ -125,48 +118,56 @@ export const generateSmartPrompt = (selectedAttributes: Record<string, unknown>)
     actionAndPosition.push(positions.map((p: unknown) => ((p as { description?: string }).description || (p as { name?: string }).name)).filter(Boolean).join(', '));
   }
   if (actionAndPosition.length > 0) {
-    parts.push(`is ${actionAndPosition.join(' and ')}`);
+    parts.push(actionAndPosition.join(', '));
   }
 
-  // 4. Attire (Clothing)
+  // 4. Additional Details (Body Type, Attire, Expression, Setting, Lighting, Camera Angle, Enhancements)
+
+  // Body Type
+  const bodyType = selectedAttributes['Body Type'];
+  if (bodyType && typeof bodyType === 'object' && 'keywords' in bodyType && Array.isArray((bodyType as { keywords: string[] }).keywords)) {
+    parts.push((bodyType as { keywords: string[] }).keywords.join(', '));
+  }
+
+  // Attire (Clothing)
   const attire = selectedAttributes.Attire;
   if (attire && Array.isArray(attire) && attire.length > 0) {
     const attireDescriptions = attire.map((c: unknown) => {
       if (typeof c === 'object' && c !== null && 'keywords' in c && Array.isArray((c as Clothing).keywords)) {
-        return `wearing a ${(c as Clothing).material ? (c as Clothing).material + ' ' : ''}${(c as Clothing).keywords.join(' ')}`;
+        return `wearing ${(c as Clothing).material ? (c as Clothing).material + ' ' : ''}${(c as Clothing).keywords.join(' ')}`;
       }
       return '';
     }).filter(Boolean);
     if (attireDescriptions.length > 0) {
-      parts.push(`and is ${attireDescriptions.join(', ')}`);
+      parts.push(attireDescriptions.join(', '));
     }
   }
 
-  // 5. Expression
+  // Expression
   const expression = selectedAttributes.Expression;
   if (expression && typeof expression === 'object' && 'keywords' in expression && Array.isArray((expression as { keywords: string[] }).keywords)) {
-    parts.push(`with an ${(expression as { keywords: string[] }).keywords.join(', ')} expression`);
+    parts.push((expression as { keywords: string[] }).keywords.join(', '));
   }
 
-  // 6. Setting
+  // Setting
   const setting = selectedAttributes.Setting;
   if (setting && typeof setting === 'object' && 'keywords' in setting && Array.isArray((setting as { keywords: string[] }).keywords)) {
-    parts.push(`in a ${(setting as { keywords: string[] }).keywords.join(' ')}`);
+    parts.push((setting as { keywords: string[] }).keywords.join(', '));
   }
 
-  // 7. Lighting
+  // Lighting
   const lighting = selectedAttributes.Lighting;
   if (lighting && typeof lighting === 'object' && 'keywords' in lighting && Array.isArray((lighting as { keywords: string[] }).keywords)) {
-    parts.push(`under ${(lighting as { keywords: string[] }).keywords.join(' ')} lighting`);
+    parts.push((lighting as { keywords: string[] }).keywords.join(', '));
   }
 
-  // 8. Camera Angle
+  // Camera Angle
   const cameraAngle = selectedAttributes['Camera Angle'];
   if (cameraAngle && typeof cameraAngle === 'object' && 'keywords' in cameraAngle && Array.isArray((cameraAngle as { keywords: string[] }).keywords)) {
-    parts.push(`from a ${(cameraAngle as { keywords: string[] }).keywords.join(' ')} angle`);
+    parts.push((cameraAngle as { keywords: string[] }).keywords.join(', '));
   }
 
-  // 9. Enhancements (multi-select)
+  // Enhancements (multi-select)
   const enhancementsAttr = selectedAttributes.Enhancements;
   if (enhancementsAttr && Array.isArray(enhancementsAttr) && enhancementsAttr.length > 0) {
     const enhancements = enhancementsAttr.map((e: unknown) => {
@@ -176,17 +177,11 @@ export const generateSmartPrompt = (selectedAttributes: Record<string, unknown>)
       return '';
     }).filter(Boolean);
     if (enhancements.length > 0) {
-      parts.push(`with added details such as ${enhancements.join(', ')}`);
+      parts.push(enhancements.join(', '));
     }
   }
 
-  // 10. Style (always last, potentially as a stylistic suffix or phrase)
-  const style = selectedAttributes.Style;
-  if (style && typeof style === 'object' && 'name' in style && typeof (style as { name: string }).name === 'string') {
-    parts.push(`in the style of ${(style as { name: string }).name}`);
-  }
-
-  // 11. Add model-specific prompt prefix
+  // 5. Add model-specific prompt prefix (if available)
   const selectedStyle = selectedAttributes.Style as Style | undefined;
   let modelPrefix = '';
   if (selectedStyle && selectedStyle.preferredModel) {
@@ -195,9 +190,15 @@ export const generateSmartPrompt = (selectedAttributes: Record<string, unknown>)
       modelPrefix = preferredModel.promptPrefix;
     }
   }
-  let finalPrompt = `${modelPrefix} ${parts.join(' ')}`;
-  // Ensure proper sentence structure (e.g., capitalize first letter)
+
+  // Join all parts with commas for cleaner style-first prompts
+  let finalPrompt = `${modelPrefix} ${parts.join(', ')}`.trim();
+
+  // Remove any double commas or leading/trailing commas
+  finalPrompt = finalPrompt.replace(/,+/g, ',').replace(/^,|,$/g, '');
+
+  // Ensure proper sentence structure (capitalize first letter)
   finalPrompt = finalPrompt.charAt(0).toUpperCase() + finalPrompt.slice(1);
-  // Do not automatically add a period, let the user decide.
+
   return finalPrompt;
 };

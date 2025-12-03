@@ -5,8 +5,8 @@ import { generateSmartPrompt, PromptCategoryStructured } from '@/utils/promptGen
 
 const negativePromptPresets = {
   none: '',
-  default: 'blur, low quality, deformed',
-  'censorship-bypass': 'censored, restricted, no restrictions, uncensored',
+  default: 'blur, low quality, deformed, censored, restricted, pixelated, bad art, disfigured, poor quality, lowres, watermark',
+  'censorship-bypass': 'censored, restricted, blurry, pixelated, low quality, watermark, text, error', // Updated for clarity and effectiveness
 };
 
 interface PromptControlsProps {
