@@ -221,6 +221,19 @@ const ImageGenerator: React.FC = () => {
           }
         })}
 
+        {/* Unified Generate button for attribute selectors */}
+        {mode === 'generate' && (
+          <div className="flex justify-center mt-6 mb-8">
+            <Button
+              onClick={handleGenerate}
+              disabled={isGenerating || !prompt.trim()}
+              className="px-8 py-2 text-base"
+            >
+              {isGenerating ? 'Generating...' : 'Generate Images'}
+            </Button>
+          </div>
+        )}
+
         {/* --- Model Manager --- */}
         {/* Always show the model manager, but use the filtered list of available models */}
         <ModelsManager

@@ -6,7 +6,7 @@ import { cleanPrompt } from '@/utils/imageGeneration';
 interface PromptInputProps {
   prompt: string;
   onPromptChange: (prompt: string) => void;
-  onGenerate: () => void;
+  onGenerate?: () => void; // Make onGenerate optional
   isGenerating: boolean;
   label?: string;
   readOnly?: boolean;
@@ -17,18 +17,14 @@ interface PromptInputProps {
 const PromptInput: React.FC<PromptInputProps> = ({
   prompt,
   onPromptChange,
-  onGenerate,
+  // onGenerate, // No longer destructured if not used internally
   isGenerating,
   label,
   readOnly = false,
   placeholder, // Destructure placeholder prop
   name,
 }) => {
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      onGenerate();
-    }
-  };
+  // Removed handleKeyPress as internal Generate button is removed
 
   return (
     <div className="input-section mb-4">
@@ -39,20 +35,14 @@ const PromptInput: React.FC<PromptInputProps> = ({
           type="text"
           value={cleanPrompt(prompt)}
           onChange={(e) => onPromptChange(e.target.value)}
-          onKeyPress={handleKeyPress}
+          // onKeyPress removed
           placeholder={placeholder || "Enter your prompt here..."} // Use provided placeholder or default
           className="flex-1 text-sm h-8"
           disabled={isGenerating}
           readOnly={readOnly}
           name={name}
         />
-        <Button
-          onClick={onGenerate}
-          disabled={isGenerating || !prompt.trim()}
-          className="px-4 h-8"
-        >
-          {isGenerating ? 'Generating...' : 'Generate'}
-        </Button>
+        {/* Removed the internal Generate button as per new UI plan */}
       </div>
     </div>
   );

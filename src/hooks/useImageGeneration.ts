@@ -29,7 +29,8 @@ export const useImageGeneration = ({ promptCategories, initialModels, enableCoPi
   const [models, setModels] = useState<Model[]>(initialModels || []);
   const [images, setImages] = useState<GeneratedImage[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [selectedAttributes, setSelectedAttributes] = useState<Record<string, any>>({}); // Revert to any to match external function expectations
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [selectedAttributes, setSelectedAttributes] = useState<Record<string, any>>({}); // Revert to any to match external function expectations, disable lint for this line
   const [manualPrompt, setManualPrompt] = useState('');
   const [useManualPrompt, setUseManualPrompt] = useState(false);
 
@@ -172,7 +173,7 @@ export const useImageGeneration = ({ promptCategories, initialModels, enableCoPi
     } finally {
       setIsGenerating(false);
     }
-  }, [likedImage, models, selectedAttributes, negativePrompt, uploadedImage, img2imgStrength, generateImageUrl]); // Added generateImageUrl to dependencies
+  }, [likedImage, models, selectedAttributes, negativePrompt, uploadedImage, img2imgStrength]); // Removed generateImageUrl from dependencies
 
   return {
     prompt,

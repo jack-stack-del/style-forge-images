@@ -21,11 +21,15 @@ export interface PromptCategoryStructured {
 export const promptCategories: PromptCategoryStructured[] = [
   {
     label: 'Character Type',
-    options: subjects.filter(s => ['1girl', '2girls', 'a couple', 'group of women'].includes(s.name)),
+    options: [
+      { name: '1girl', keywords: ['1girl'] },
+      { name: '2girls', keywords: ['2girls'] },
+      { name: '3girls', keywords: ['3girls'] }
+    ],
   },
   {
     label: 'Subject',
-    options: subjects.filter(s => ['woman', 'beautiful woman', 'sensual woman', 'curvy woman', 'athletic woman', 'femme fatale', 'submissive girl', 'dominant woman'].includes(s.name)),
+    options: subjects.filter(s => ['1girl', '2girls', '3girls', 'submissive girl', 'dominant girl'].includes(s.name)), // Adjusted to use 'girl' consistently
   },
   {
     label: 'Action',
