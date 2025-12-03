@@ -1,73 +1,131 @@
-# Welcome to your Lovable project
+# AI Image Generator
 
-## Project info
+This project is a React-based AI image generator, built with Vite and TypeScript, leveraging Shadcn UI components for a modern and responsive interface. It allows users to generate images from text prompts, apply various attributes, select different AI models, and utilize image-to-image capabilities with adjustable strength.
 
-**URL**: https://lovable.dev/projects/ffd0774e-a214-442c-8a39-0d04e7d82519
+## Features
 
-## How can I edit this code?
+*   **Text-to-Image Generation:** Generate images from descriptive text prompts.
+*   **Attribute-Based Prompting:** Select from predefined categories and attributes to construct detailed prompts.
+*   **Multi-Select Attributes:** Choose multiple attributes for categories like "Action" and "Enhancements".
+*   **Manual Prompt Override:** Option to manually input a prompt, overriding the attribute-generated one.
+*   **Negative Prompting:** Specify elements to exclude from the generated images.
+*   **Image-to-Image (Img2Img):** Upload a source image to guide the generation process, with adjustable strength.
+*   **Multiple AI Models:** Select from a variety of image generation models (currently powered by Pollinations.ai).
+*   **Multi-Style Image Generation:** Generates multiple images simultaneously using various predefined styles, offering more diverse outputs.
+*   **Full-Size Image Viewer:** Click on generated images to view them in a full-screen modal.
+*   **Clean Prompt Display:** Automatically removes redundant phrases (e.g., "photorealistic image of photorealistic image of") from the displayed prompt for a cleaner UI.
+*   **Consistent Terminology:** Ensures gender-related terms in prompts are consistent ("girl" instead of "female").
+*   **Responsive Design:** Built with modern UI components for a seamless experience on different devices.
+*   **Robust Error Handling:** Provides user-friendly toast notifications for input validation.
 
-There are several ways of editing your application.
+## Planned Enhancements (Future Development)
 
-**Use Lovable**
+*   **Advanced Image Manipulation:** Integration of APIs for inpainting (editing specific parts of generated/uploaded images) and potentially more flexible content handling for uploaded images.
+*   **Performance Optimizations:** Further improvements to generation speed and resource usage.
+*   **Code Documentation:** Comprehensive JSDoc comments for easier development and maintenance.
+*   **Accessibility Improvements:** Ensuring the application is usable by a wider audience.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/ffd0774e-a214-442c-8a39-0d04e7d82519) and start prompting.
+## Getting Started
 
-Changes made via Lovable will be committed automatically to this repo.
+### Prerequisites
 
-**Use your preferred IDE**
+*   Node.js (v18 or higher)
+*   npm or Yarn (preferred: npm)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Installation
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-username/ai-image-generator.git
+    cd ai-image-generator
+    ```
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    # or yarn install
+    ```
 
-Follow these steps:
+### Environment Variables
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+For future API integrations (e.g., advanced image manipulation services), you might need API keys.
+1.  Create a `.env` file in the root of the project by copying `.env.example`:
+    ```bash
+    cp .env.example .env
+    ```
+2.  Open `.env` and fill in any required API keys:
+    ```
+    # VITE_EXTERNAL_API_KEY=your_api_key_here
+    ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Running the Application
 
-# Step 3: Install the necessary dependencies.
-npm i
+To start the development server, you can use the newly created `start.command` file:
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
+./start.command
+```
+
+Alternatively, you can run:
+
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The application will typically be available at `http://localhost:8080`.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Building for Production
 
-**Use GitHub Codespaces**
+To build the application for production:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```bash
+npm run build
+# or yarn build
+```
 
-## What technologies are used for this project?
+This will create an optimized build in the `dist` directory.
 
-This project is built with:
+## Project Structure
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+```
+.
+├── public/                # Static assets
+├── src/
+│   ├── components/        # Reusable UI components
+│   │   ├── ui/            # Shadcn UI components (button, toast, etc.)
+│   │   ├── AttributeSelector.tsx
+│   │   ├── GeneratedImages.tsx
+│   │   ├── ImageGenerator.tsx
+│   │   ├── ImageModal.tsx         # New: Full-size image viewing modal
+│   │   ├── ModelsManager.tsx
+│   │   ├── MultiAttributeSelector.tsx
+│   │   ├── PromptControls.tsx
+│   │   └── PromptInput.tsx
+│   ├── hooks/             # Custom React hooks (e.g., useImageGeneration)
+│   │   └── useImageGeneration.ts
+│   ├── pages/             # Page-level components
+│   │   ├── Index.tsx
+│   │   └── NotFound.tsx
+│   ├── types/             # TypeScript type definitions
+│   │   └── imageGenerator.ts
+│   ├── utils/             # Utility functions
+│   │   ├── imageGeneration.ts
+│   │   └── promptGeneratorData.ts
+│   ├── App.css
+│   ├── App.tsx
+│   ├── index.css
+│   └── main.tsx
+├── .env.example           # Example environment variables
+├── .gitignore             # Files ignored by Git
+├── LICENSE                # Project license (MIT)
+├── package.json           # Project dependencies and scripts
+├── tsconfig.json          # TypeScript configuration
+└── vite.config.ts         # Vite configuration
+```
 
-## How can I deploy this project?
+## License
 
-Simply open [Lovable](https://lovable.dev/projects/ffd0774e-a214-442c-8a39-0d04e7d82519) and click on Share -> Publish.
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
-## Can I connect a custom domain to my Lovable project?
+## Contributing
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Contributions are welcome! Please feel free to open issues or submit pull requests.
