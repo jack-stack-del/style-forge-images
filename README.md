@@ -1,19 +1,53 @@
-# AI Image Generator
+# AI Image Generator - Free Workaround Tool
 
-This project is a React-based AI image generator, built with Vite and TypeScript, leveraging Shadcn UI components for a modern and responsive interface. It allows users to generate images from text prompts, apply various attributes, select different AI models, and utilize image-to-image capabilities with adjustable strength.
+**A realistic, unrestricted image generation tool** - Your free workaround for creating diverse AI images without restrictions.
+
+This React-based app leverages **30+ Pollinations.ai models** to generate maximum creative variety from a single prompt. Perfect for artists, creators, and anyone wanting diverse AI-generated content without platform limitations.
+
+⚠️ **Realistic Expectations**: Results vary by model. Some images may not match expectations due to AI limitations, but the variety gives you more options to choose from.
+
+## What to Expect
+
+### ✅ **What Works Well:**
+- Diverse image generation from the same prompt
+- Different artistic styles from various AI models
+- Creative exploration and experimentation
+- Fast generation (typically 10-30 seconds per image)
+
+### ⚠️ **Realistic Limitations:**
+- **Quality varies** - Some models produce better results than others
+- **Inconsistent results** - Same prompt can give very different outputs
+- **No guaranteed perfection** - AI has limitations and biases
+- **Rate limiting** - Free API may limit requests during peak times
+- **Server issues** - Pollinations.ai may be temporarily unavailable
+
+### 🎯 **Best Use Cases:**
+- Creative brainstorming and ideation
+- Getting multiple perspectives on the same concept
+- Finding unexpected artistic interpretations
+- Rapid prototyping of visual ideas
+- Educational exploration of AI image generation
 
 ## Features
 
-*   **Text-to-Image Generation:** Generate images from descriptive text prompts.
+*   **Text-to-Image Generation:** Generate images from descriptive text prompts using multiple AI models simultaneously.
+*   **Model-Based Variety:** Generate the same prompt with different Pollinations.ai models for maximum creative diversity (30+ models available).
 *   **Attribute-Based Prompting:** Select from predefined categories and attributes to construct detailed prompts.
 *   **Multi-Select Attributes:** Choose multiple attributes for categories like "Action" and "Enhancements".
 *   **Manual Prompt Override:** Option to manually input a prompt, overriding the attribute-generated one.
-*   **Negative Prompting:** Specify elements to exclude from the generated images.
-*   **Image-to-Image (Img2Img):** Upload a source image to guide the generation process, with adjustable strength.
-*   **Multiple AI Models:** Select from a variety of image generation models (currently powered by Pollinations.ai).
-*   **Multi-Style Image Generation:** Generates multiple images simultaneously using various predefined styles, offering more diverse outputs.
+*   **AI-Powered Prompt Enhancement:** Enhance your manual prompts using OpenRouter's Gemma AI model for photorealistic, professional-quality prompts. Requires a free OpenRouter API key.
+*   **Advanced Negative Prompting:** Five specialized presets to exclude unwanted elements:
+    *   **None:** No negative prompts applied
+    *   **Default:** Comprehensive quality controls for general image generation (anatomical issues, artifacts, low quality)
+    *   **High Quality:** Maximum quality preset for professional/commercial use (stricter quality standards)
+    *   **Anime Style:** Prevents realistic elements in anime generation (photorealism, 3D rendering)
+    *   **Censorship Bypass:** Specialized for realistic uncensored NSFW images (censorship artifacts, anatomical deformations, style issues)
+*   **Multiple AI Models:** Comprehensive collection of Pollinations.ai models including FLUX, Stable Diffusion, Pony Realistic, and more.
+*   **Generate with All Models:** Special button to generate images using all available models for ultimate variety.
+*   **Model Attribution:** Each generated image clearly shows which AI model was used.
 *   **Full-Size Image Viewer:** Click on generated images to view them in a full-screen modal.
 *   **Clean Prompt Display:** Automatically removes redundant phrases (e.g., "photorealistic image of photorealistic image of") from the displayed prompt for a cleaner UI.
+*   **Proper Input Field Handling:** Input fields correctly handle spaces and special characters without cursor jumping or character displacement issues.
 *   **Consistent Terminology:** Ensures gender-related terms in prompts are consistent ("girl" instead of "female").
 *   **Responsive Design:** Built with modern UI components for a seamless experience on different devices.
 *   **Robust Error Handling:** Provides user-friendly toast notifications for input validation.
@@ -47,7 +81,25 @@ This project is a React-based AI image generator, built with Vite and TypeScript
 
 ### Environment Variables
 
-For future API integrations (e.g., advanced image manipulation services), you might need API keys.
+#### For Prompt Enhancement Feature (Optional)
+The AI-powered prompt enhancement feature requires an OpenRouter API key to work. This feature is completely optional and only enhances manual prompts for better photorealistic results.
+
+1. **Get an OpenRouter API Key** (Free):
+   - Visit [openrouter.ai/keys](https://openrouter.ai/keys)
+   - Create a free account and generate an API key
+   - Copy the key (starts with `sk-or-v1-`)
+
+2. **Using the Enhancement Feature**:
+   - Enable "Use Manual Prompt Input" in the app
+   - Type your prompt and click the "Enhance" button
+   - You'll be prompted to enter your OpenRouter API key on first use
+   - The key is stored temporarily in your browser session only
+   - Click "Forget Key" anytime to clear it
+
+**Note:** The API key is stored in browser session storage only - it's forgotten when you close the browser tab. No account registration or persistent storage is required.
+
+#### For Future API Integrations
+Additional API keys for future features can be configured:
 1.  Create a `.env` file in the root of the project by copying `.env.example`:
     ```bash
     cp .env.example .env
@@ -59,19 +111,22 @@ For future API integrations (e.g., advanced image manipulation services), you mi
 
 ### Running the Application
 
-To start the development server, you can use the newly created `start.command` file:
+#### Enkelt sätt (rekommenderas):
+Använd de förberedda startfilerna i `dist/` mappen:
 
+- **Mac:** Dubbelklicka på `dist/mac/start.command`
+- **Windows:** Dubbelklicka på `dist/windows/start.bat`
+- **Linux:** Kör `./dist/linux/start.sh`
+
+Appen öppnas automatiskt i din webbläsare!
+
+#### Manuellt sätt:
 ```bash
-./start.command
-```
-
-Alternatively, you can run:
-
-```bash
+npm install
 npm run dev
 ```
 
-The application will typically be available at `http://localhost:8080`.
+Appen kommer att vara tillgänglig på `http://localhost:8080`.
 
 ### Building for Production
 

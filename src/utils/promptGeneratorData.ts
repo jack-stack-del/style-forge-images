@@ -19,10 +19,7 @@ export interface PromptCategoryStructured {
 }
 
 export const promptCategories: PromptCategoryStructured[] = [
-  {
-    label: 'Style', // MOVED TO TOP - PRIORITY FOR STYLE-FIRST PROMPTS
-    options: styles,
-  },
+  // Style is now handled separately in the UI, not here to avoid duplication
   {
     label: 'Character Type',
     options: [
@@ -80,94 +77,111 @@ export const promptCategories: PromptCategoryStructured[] = [
 export const generateSmartPrompt = (selectedAttributes: Record<string, unknown>): string => {
   const parts: string[] = [];
 
-  // NEW ORDER: Style → Subject → Action → Additional Details
+  // OPTIMIZED ORDER: Quality → Subject → Style → Details → Technical
+  // Based on prompt engineering research for diffusion models
 
-  // 1. Style Specification (moved to front - PRIORITY CHANGE)
-  const style = selectedAttributes.Style;
-  if (style && typeof style === 'object' && 'keywords' in style && Array.isArray((style as { keywords: string[] }).keywords)) {
-    parts.push((style as { keywords: string[] }).keywords.join(' '));
-  }
-
-  // 2. Subject Specification (Character Type and Subject - streamlined)
-  let subjectDescription = "";
+  // 1. PRIMARY SUBJECT (most important - gets emphasis)
+  let primarySubject = "";
   const characterType = selectedAttributes['Character Type'];
   const subject = selectedAttributes.Subject;
 
   if (characterType && typeof characterType === 'object' && 'keywords' in characterType && Array.isArray((characterType as { keywords: string[] }).keywords)) {
-    subjectDescription = (characterType as { keywords: string[] }).keywords.join(' ');
+    primarySubject = (characterType as { keywords: string[] }).keywords.join(' ');
   } else if (subject && typeof subject === 'object' && 'keywords' in subject && Array.isArray((subject as { keywords: string[] }).keywords)) {
-    subjectDescription = (subject as { keywords: string[] }).keywords.join(' ');
+    primarySubject = (subject as { keywords: string[] }).keywords.join(' ');
   }
 
-  if (subjectDescription) {
-    // Replace any "female" with "girl" to maintain consistency
-    subjectDescription = subjectDescription.replace(/female/gi, 'girl');
-    // Remove "A stunningly beautiful" prefix for cleaner, style-first prompts
-    parts.push(subjectDescription);
+  if (primarySubject) {
+    // Replace any "female" with "girl" and add emphasis for subject
+    primarySubject = primarySubject.replace(/female/gi, 'girl');
+    parts.push(`(${primarySubject})`); // Primary subject gets parentheses for emphasis
   }
 
-  // 3. Action or Look (Action/Pose/Positions - streamlined)
-  const actionAndPosition: string[] = [];
+  // 2. STYLE & QUALITY (high priority)
+  const style = selectedAttributes.Style;
+  if (style && typeof style === 'object' && 'keywords' in style && Array.isArray((style as { keywords: string[] }).keywords)) {
+    // Style keywords get emphasis
+    const styleText = (style as { keywords: string[] }).keywords.join(' ');
+    parts.push(`{${styleText}}`); // Style gets braces for high emphasis
+  }
+
+  // 3. ACTION & POSE (dynamic elements)
+  const actionParts: string[] = [];
   const action = selectedAttributes.Action;
   const positions = selectedAttributes.Positions;
 
   if (action && Array.isArray(action) && action.length > 0) {
-    actionAndPosition.push(action.map((a: unknown) => ((a as { description?: string }).description || (a as { name?: string }).name)).filter(Boolean).join(', '));
+    const actions = action.map((a: unknown) => ((a as { description?: string }).description || (a as { name?: string }).name)).filter(Boolean);
+    actionParts.push(actions.join(' '));
   }
   if (positions && Array.isArray(positions) && positions.length > 0) {
-    actionAndPosition.push(positions.map((p: unknown) => ((p as { description?: string }).description || (p as { name?: string }).name)).filter(Boolean).join(', '));
+    const poses = positions.map((p: unknown) => ((p as { description?: string }).description || (p as { name?: string }).name)).filter(Boolean);
+    actionParts.push(poses.join(' '));
   }
-  if (actionAndPosition.length > 0) {
-    parts.push(actionAndPosition.join(', '));
+  if (actionParts.length > 0) {
+    parts.push(actionParts.join(', '));
   }
 
-  // 4. Additional Details (Body Type, Attire, Expression, Setting, Lighting, Camera Angle, Enhancements)
+  // 4. PHYSICAL ATTRIBUTES (body type, attire)
+  const physicalParts: string[] = [];
 
   // Body Type
   const bodyType = selectedAttributes['Body Type'];
   if (bodyType && typeof bodyType === 'object' && 'keywords' in bodyType && Array.isArray((bodyType as { keywords: string[] }).keywords)) {
-    parts.push((bodyType as { keywords: string[] }).keywords.join(', '));
+    physicalParts.push((bodyType as { keywords: string[] }).keywords.join(' '));
   }
 
-  // Attire (Clothing)
+  // Attire (Clothing) - important for composition
   const attire = selectedAttributes.Attire;
   if (attire && Array.isArray(attire) && attire.length > 0) {
     const attireDescriptions = attire.map((c: unknown) => {
       if (typeof c === 'object' && c !== null && 'keywords' in c && Array.isArray((c as Clothing).keywords)) {
-        return `wearing ${(c as Clothing).material ? (c as Clothing).material + ' ' : ''}${(c as Clothing).keywords.join(' ')}`;
+        const material = (c as Clothing).material ? (c as Clothing).material + ' ' : '';
+        return `${material}${(c as Clothing).keywords.join(' ')}`;
       }
       return '';
     }).filter(Boolean);
     if (attireDescriptions.length > 0) {
-      parts.push(attireDescriptions.join(', '));
+      physicalParts.push(`wearing ${attireDescriptions.join(' and ')}`);
     }
   }
 
-  // Expression
+  if (physicalParts.length > 0) {
+    parts.push(physicalParts.join(', '));
+  }
+
+  // 5. EXPRESSION & EMOTION (facial details)
   const expression = selectedAttributes.Expression;
   if (expression && typeof expression === 'object' && 'keywords' in expression && Array.isArray((expression as { keywords: string[] }).keywords)) {
-    parts.push((expression as { keywords: string[] }).keywords.join(', '));
+    parts.push((expression as { keywords: string[] }).keywords.join(' '));
   }
 
-  // Setting
+  // 6. ENVIRONMENT (setting, lighting - lower priority)
+  const environmentParts: string[] = [];
+
   const setting = selectedAttributes.Setting;
   if (setting && typeof setting === 'object' && 'keywords' in setting && Array.isArray((setting as { keywords: string[] }).keywords)) {
-    parts.push((setting as { keywords: string[] }).keywords.join(', '));
+    environmentParts.push((setting as { keywords: string[] }).keywords.join(' '));
   }
 
-  // Lighting
   const lighting = selectedAttributes.Lighting;
   if (lighting && typeof lighting === 'object' && 'keywords' in lighting && Array.isArray((lighting as { keywords: string[] }).keywords)) {
-    parts.push((lighting as { keywords: string[] }).keywords.join(', '));
+    environmentParts.push((lighting as { keywords: string[] }).keywords.join(' '));
   }
 
-  // Camera Angle
+  if (environmentParts.length > 0) {
+    parts.push(environmentParts.join(', '));
+  }
+
+  // 7. TECHNICAL DETAILS (camera, enhancements - lowest priority)
+  const technicalParts: string[] = [];
+
   const cameraAngle = selectedAttributes['Camera Angle'];
   if (cameraAngle && typeof cameraAngle === 'object' && 'keywords' in cameraAngle && Array.isArray((cameraAngle as { keywords: string[] }).keywords)) {
-    parts.push((cameraAngle as { keywords: string[] }).keywords.join(', '));
+    technicalParts.push((cameraAngle as { keywords: string[] }).keywords.join(' '));
   }
 
-  // Enhancements (multi-select)
+  // Enhancements (quality improvements)
   const enhancementsAttr = selectedAttributes.Enhancements;
   if (enhancementsAttr && Array.isArray(enhancementsAttr) && enhancementsAttr.length > 0) {
     const enhancements = enhancementsAttr.map((e: unknown) => {
@@ -177,11 +191,16 @@ export const generateSmartPrompt = (selectedAttributes: Record<string, unknown>)
       return '';
     }).filter(Boolean);
     if (enhancements.length > 0) {
-      parts.push(enhancements.join(', '));
+      // Quality enhancements get light emphasis
+      technicalParts.push(`[${enhancements.join(' ')}]`);
     }
   }
 
-  // 5. Add model-specific prompt prefix (if available)
+  if (technicalParts.length > 0) {
+    parts.push(technicalParts.join(', '));
+  }
+
+  // 8. MODEL-SPECIFIC PREFIX (if needed for certain models)
   const selectedStyle = selectedAttributes.Style as Style | undefined;
   let modelPrefix = '';
   if (selectedStyle && selectedStyle.preferredModel) {
@@ -191,13 +210,24 @@ export const generateSmartPrompt = (selectedAttributes: Record<string, unknown>)
     }
   }
 
-  // Join all parts with commas for cleaner style-first prompts
-  let finalPrompt = `${modelPrefix} ${parts.join(', ')}`.trim();
+  // CONSTRUCT FINAL PROMPT WITH PROPER FORMATTING
+  let finalPrompt = '';
 
-  // Remove any double commas or leading/trailing commas
-  finalPrompt = finalPrompt.replace(/,+/g, ',').replace(/^,|,$/g, '');
+  if (modelPrefix) {
+    finalPrompt = `${modelPrefix}, `;
+  }
 
-  // Ensure proper sentence structure (capitalize first letter)
+  // Join parts with proper separators (commas work better than other separators for most models)
+  finalPrompt += parts.join(', ');
+
+  // Clean up formatting
+  finalPrompt = finalPrompt
+    .replace(/,+/g, ',') // Remove double commas
+    .replace(/^,|,$/g, '') // Remove leading/trailing commas
+    .replace(/\s+/g, ' ') // Normalize spaces
+    .trim();
+
+  // Ensure proper capitalization
   finalPrompt = finalPrompt.charAt(0).toUpperCase() + finalPrompt.slice(1);
 
   return finalPrompt;

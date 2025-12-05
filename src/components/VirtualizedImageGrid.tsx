@@ -150,6 +150,9 @@ const VirtualizedImageGrid: React.FC<VirtualizedImageGridProps> = ({
                     className="w-full h-48 object-cover"
                   />
                   <div className="p-2">
+                    <p className="text-xs font-semibold text-blue-600 mb-1">
+                      {image.modelName}
+                    </p>
                     <p className="text-xs text-gray-600 truncate mb-1">
                       {image.prompt}
                     </p>

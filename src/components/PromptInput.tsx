@@ -7,7 +7,9 @@ interface PromptInputProps {
   prompt: string;
   onPromptChange: (prompt: string) => void;
   onGenerate?: () => void; // Make onGenerate optional
+  onEnhance?: () => void; // Add onEnhance prop
   isGenerating: boolean;
+  isEnhancing?: boolean; // Add isEnhancing state
   label?: string;
   readOnly?: boolean;
   placeholder?: string; // Add placeholder prop
@@ -18,7 +20,9 @@ const PromptInput: React.FC<PromptInputProps> = ({
   prompt,
   onPromptChange,
   // onGenerate, // No longer destructured if not used internally
+  onEnhance,
   isGenerating,
+  isEnhancing = false,
   label,
   readOnly = false,
   placeholder, // Destructure placeholder prop
@@ -33,16 +37,26 @@ const PromptInput: React.FC<PromptInputProps> = ({
       <div className="flex gap-2">
         <Input
           type="text"
-          value={cleanPrompt(prompt)}
+          value={prompt}
           onChange={(e) => onPromptChange(e.target.value)}
           // onKeyPress removed
           placeholder={placeholder || "Enter your prompt here..."} // Use provided placeholder or default
           className="flex-1 text-sm h-8"
-          disabled={isGenerating}
+          disabled={isGenerating || isEnhancing}
           readOnly={readOnly}
           name={name}
         />
-        {/* Removed the internal Generate button as per new UI plan */}
+        {onEnhance && !readOnly && (
+          <Button
+            onClick={onEnhance}
+            disabled={isGenerating || isEnhancing || !prompt.trim()}
+            variant="outline"
+            size="sm"
+            className="px-3 py-1 text-xs"
+          >
+            {isEnhancing ? 'Enhancing...' : 'Enhance'}
+          </Button>
+        )}
       </div>
     </div>
   );
