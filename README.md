@@ -111,7 +111,24 @@ Additional API keys for future features can be configured:
 
 ### Running the Application
 
-#### Enkelt sätt (rekommenderas):
+#### ⚠️ **Currently Offline-Only (Private Repository)**
+This application is currently configured for **local/offline use only**. It is fully prepared for online deployment when needed, but is not publicly accessible at this time.
+
+**Deployment Status:** ✅ **Prepared for Online Deployment**
+- Production build scripts ready (`npm run build`)
+- GitHub Pages deployment configuration intact
+- Static hosting compatible
+- All deployment code and logic preserved for future use
+
+#### Local Development:
+```bash
+npm install
+npm run dev
+```
+
+Appen kommer att vara tillgänglig på `http://localhost:8080`.
+
+#### Enkelt sätt (lokal):
 Använd de förberedda startfilerna i `dist/` mappen:
 
 - **Mac:** Dubbelklicka på `dist/mac/start.command`
@@ -119,14 +136,6 @@ Använd de förberedda startfilerna i `dist/` mappen:
 - **Linux:** Kör `./dist/linux/start.sh`
 
 Appen öppnas automatiskt i din webbläsare!
-
-#### Manuellt sätt:
-```bash
-npm install
-npm run dev
-```
-
-Appen kommer att vara tillgänglig på `http://localhost:8080`.
 
 ### Building for Production
 
@@ -138,6 +147,23 @@ npm run build
 ```
 
 This will create an optimized build in the `dist` directory.
+
+### Deployment Preparation
+
+**Status:** ✅ **Fully Prepared for Online Deployment**
+
+The application is configured and ready for online deployment using any static hosting service:
+
+- **GitHub Pages:** Ready to deploy (previously deployed, can be re-enabled)
+- **Vercel/Netlify:** Compatible with drag-and-drop deployment or CLI
+- **Static Hosting:** All assets optimized and self-contained
+
+**To re-enable online deployment:**
+1. Build: `npm run build`
+2. Deploy `dist/` folder to any static hosting service
+3. Or recreate gh-pages branch: `git checkout -b gh-pages && cp -r dist/* . && git add . && git commit -m "Deploy" && git push origin gh-pages`
+
+**Note:** Prompt enhancement requires backend deployment (Express server) for full functionality.
 
 ## Project Structure
 
